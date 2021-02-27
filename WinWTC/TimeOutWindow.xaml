@@ -1,0 +1,36 @@
+﻿<Window x:Class="WinWTC.TimeOutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="TimeOutWindow"
+        Height="200"
+        Width="200"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Topmost="True" Background="{x:Null}">
+    <Grid Name="mainGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <StackPanel.Background>
+                <ImageBrush ImageSource="assets/espresso-cup-warning-100.png" Stretch="None">
+                    <ImageBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleY="1.3" ScaleX="1.3"/>
+                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                            <RotateTransform CenterY="0.5" CenterX="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </ImageBrush.RelativeTransform>
+                </ImageBrush>
+            </StackPanel.Background>
+        </StackPanel>
+    </Grid>
+</Window>

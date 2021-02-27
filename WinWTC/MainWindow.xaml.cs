@@ -1,19 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace WinWTC
@@ -23,8 +11,11 @@ namespace WinWTC
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private System.Windows.Forms.NotifyIcon MyNotifyIcon;
         private DispatcherTimer _timer;
         private string _idleTime;
+        private bool _isTimeOutActive;
+        private TimeOutWindow _timeOutWindow;
 
         public string IdleTime
         {
@@ -48,10 +39,17 @@ namespace WinWTC
         public MainWindow()
         {
             InitializeComponent();
+
             mainGrid.DataContext = this;
+
+            this.StateChanged += new EventHandler(Window_StateChanged);
+            MyNotifyIcon = new System.Windows.Forms.NotifyIcon();
+            MyNotifyIcon.Icon = new System.Drawing.Icon(@"assets\espresso-cup-clock-100.ico");
+            MyNotifyIcon.MouseDoubleClick += (s,e) => this.WindowState = WindowState.Normal;
+            
             InitTimer();
         }
-        
+
         public void InitTimer()
         {
             _timer = new DispatcherTimer();
@@ -64,14 +62,43 @@ namespace WinWTC
         {
             IdleTime = IdleTimeDetector.GetIdleTimeInfo().IdleTime.ToString();
             SetSignalField();
+            if (IdleTimeDetector.GetIdleTimeInfo().IdleTime >= TimeSpan.FromSeconds(2))
+            {
+                if (!_isTimeOutActive)
+                {
+                    _timeOutWindow = new TimeOutWindow();
+                    _timeOutWindow.Closed += new EventHandler((s_tow, e_tow) => _isTimeOutActive = false);
+                    _timeOutWindow.Show();
+                    _isTimeOutActive = true;
+                }
+            }
+            else
+            {
+                if (_isTimeOutActive)
+                    _timeOutWindow.Close();
+            }
         }
 
         private void SetSignalField()
         {
-            if(IdleTimeDetector.GetIdleTimeInfo().IdleTime >= TimeSpan.FromSeconds(10))
+            if (IdleTimeDetector.GetIdleTimeInfo().IdleTime >= TimeSpan.FromSeconds(10))
                 signalField.Background = Brushes.IndianRed;
             else
                 signalField.Background = Brushes.Green;
+        }
+
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if (this.WindowState == WindowState.Minimized)
+            {
+                this.ShowInTaskbar = false;
+                MyNotifyIcon.Visible = true;
+            }
+            else if (this.WindowState == WindowState.Normal)
+            {
+                MyNotifyIcon.Visible = false;
+                this.ShowInTaskbar = true;
+            }
         }
     }
 }
