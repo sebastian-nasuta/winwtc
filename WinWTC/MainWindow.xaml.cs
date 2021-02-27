@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WinWTC.extensions;
+using WinWTC.helpers;
+using WinWTC.models;
 
 namespace WinWTC
 {
@@ -11,11 +16,20 @@ namespace WinWTC
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private System.Windows.Forms.NotifyIcon MyNotifyIcon;
+        private const int firstBreak = 5;
+        private const int secondBreak = 10;
+
         private DispatcherTimer _timer;
+        //private TimeOutWindow _timeOutWindow;
+        //private bool _isTimeOutActive;
+
         private string _idleTime;
-        private bool _isTimeOutActive;
-        private TimeOutWindow _timeOutWindow;
+        private Break _currentBreak;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        public List<Break> FinishedBreaks = new List<Break>();
 
         public string IdleTime
         {
@@ -30,75 +44,83 @@ namespace WinWTC
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public int TwoCount => GetCount(firstBreak);
+        public int FiveCount => GetCount(secondBreak);
 
         public MainWindow()
         {
             InitializeComponent();
-
             mainGrid.DataContext = this;
-
-            this.StateChanged += new EventHandler(Window_StateChanged);
-            MyNotifyIcon = new System.Windows.Forms.NotifyIcon();
-            MyNotifyIcon.Icon = new System.Drawing.Icon(@"assets\espresso-cup-clock-100.ico");
-            MyNotifyIcon.MouseDoubleClick += (s,e) => this.WindowState = WindowState.Normal;
-            
+            new WindowStateHelper(this);
             InitTimer();
         }
 
         public void InitTimer()
         {
             _timer = new DispatcherTimer();
-            _timer.Tick += new EventHandler(SetIdleTime);
+            _timer.Tick += new EventHandler(SetProperties);
             _timer.Interval = TimeSpan.FromMilliseconds(1); // in miliseconds
             _timer.Start();
         }
 
-        private void SetIdleTime(object sender, EventArgs e)
+        private void SetProperties(object sender, EventArgs e)
         {
-            IdleTime = IdleTimeDetector.GetIdleTimeInfo().IdleTime.ToString();
-            SetSignalField();
-            if (IdleTimeDetector.GetIdleTimeInfo().IdleTime >= TimeSpan.FromSeconds(2))
+            if (_currentBreak == null)
+                _currentBreak = new Break();
+
+            var idleTime = IdleTimeDetector.GetIdleTimeInfo().IdleTime;
+            SetIdleTime(idleTime);
+            if (idleTime.TotalSeconds < firstBreak && _currentBreak?.Duration != null)
             {
-                if (!_isTimeOutActive)
-                {
-                    _timeOutWindow = new TimeOutWindow();
-                    _timeOutWindow.Closed += new EventHandler((s_tow, e_tow) => _isTimeOutActive = false);
-                    _timeOutWindow.Show();
-                    _isTimeOutActive = true;
-                }
+                FinishedBreaks.Add(_currentBreak);
+                _currentBreak = new Break();
+                RaiseCounts();
             }
-            else
+
+            switch (idleTime.TotalSeconds)
             {
-                if (_isTimeOutActive)
-                    _timeOutWindow.Close();
+                case firstBreak:
+                case secondBreak:
+                    _currentBreak.Duration = idleTime;
+                    RaiseCounts();
+                    break;
             }
         }
 
-        private void SetSignalField()
+        private void SetIdleTime(TimeSpan idleTime)
         {
-            if (IdleTimeDetector.GetIdleTimeInfo().IdleTime >= TimeSpan.FromSeconds(10))
-                signalField.Background = Brushes.IndianRed;
-            else
-                signalField.Background = Brushes.Green;
+            IdleTime = idleTime.ToString();
+
+
+            //if (IdleTimeDetector.GetIdleTimeInfo().IdleTime >= TimeSpan.FromSeconds(2))
+            //{
+            //    if (!_isTimeOutActive)
+            //    {
+            //        _timeOutWindow = new TimeOutWindow();
+            //        _timeOutWindow.Closed += new EventHandler((s_tow, e_tow) => _isTimeOutActive = false);
+            //        _timeOutWindow.Show();
+            //        _isTimeOutActive = true;
+            //    }
+            //}
+            //else
+            //{
+            //    if (_isTimeOutActive)
+            //        _timeOutWindow.Close();
+            //}
         }
 
-        private void Window_StateChanged(object sender, EventArgs e)
+        private void RaiseCounts()
         {
-            if (this.WindowState == WindowState.Minimized)
-            {
-                this.ShowInTaskbar = false;
-                MyNotifyIcon.Visible = true;
-            }
-            else if (this.WindowState == WindowState.Normal)
-            {
-                MyNotifyIcon.Visible = false;
-                this.ShowInTaskbar = true;
-            }
+            OnPropertyChanged("TwoCount");
+            OnPropertyChanged("FiveCount");
+        }
+
+        private int GetCount(int seconds)
+        {
+            int result = FinishedBreaks.Where(n => n.Duration?.Seconds == seconds).Count();
+            if (_currentBreak != null && _currentBreak.Duration?.Seconds == seconds)
+                result++;
+            return result;
         }
     }
 }

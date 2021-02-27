@@ -6,54 +6,45 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="MainWindow"
     Width="800"
-    Height="450"
+    Height="300"
     mc:Ignorable="d">
     <Grid Name="mainGrid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <Border Name="signalField" Background="#2f5cb6" />
         <Border Grid.Column="1" Background="#1f3d7a" />
-        <Border
-            Grid.Row="1"
-            Grid.ColumnSpan="2"
-            Background="#152951" />
+        <Border Grid.Column="2" Background="#152951" />
 
-        <StackPanel
-            Grid.Column="1"
-            Margin="40,0,0,0"
-            VerticalAlignment="Center">
-            <TextBlock
-                FontSize="25"
-                Foreground="White"
-                Text="{Binding Path=IdleTime}"/>
+        <StackPanel>
+            <StackPanel.Background>
+                <ImageBrush ImageSource="assets/espresso-cup-clock-100.png" Stretch="None">
+                    <ImageBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="1.3" ScaleY="1.3"/>
+                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                            <RotateTransform CenterY="0.5" CenterX="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </ImageBrush.RelativeTransform>
+                </ImageBrush>
+            </StackPanel.Background>
         </StackPanel>
-        <StackPanel
-            Grid.Row="1"
-            Grid.ColumnSpan="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Orientation="Horizontal">
-            <TextBlock
-                Margin="0,0,20,0"
-                FontSize="25"
-                Foreground="White"
-                Text="High: 66°" />
-            <TextBlock
-                Margin="0,0,20,0"
-                FontSize="25"
-                Foreground="White"
-                Text="Low: 43°" />
-            <TextBlock
-                FontSize="25"
-                Foreground="White"
-                Text="Feels like: 63°" />
+        <StackPanel Grid.Column="1" Margin="20,0,20,0" VerticalAlignment="Center">
+            <TextBlock FontSize="25" Foreground="White" HorizontalAlignment="Right" Text="2's" />
+            <TextBlock FontSize="25" Foreground="White" HorizontalAlignment="Right" Text="5's" />
+            <TextBlock FontSize="25" Foreground="White" HorizontalAlignment="Right" Text="IdleTime" />
+        </StackPanel>
+        <StackPanel Grid.Column="2" Margin="20,0,20,0" VerticalAlignment="Center">
+            <TextBlock FontSize="25" Foreground="White" Text="{Binding Path=TwoCount}" />
+            <TextBlock FontSize="25" Foreground="White" Text="{Binding Path=FiveCount}" />
+            <TextBlock FontSize="25" Foreground="White" Text="{Binding Path=IdleTime}" />
         </StackPanel>
     </Grid>
 </Window>

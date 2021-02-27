@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinWTC
+namespace WinWTC.extensions
 {
     public static class IdleTimeDetector
     {

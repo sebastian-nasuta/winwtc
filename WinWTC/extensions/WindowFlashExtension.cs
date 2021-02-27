@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace WinWTC
+namespace WinWTC.extensions
 {
     public static class WindowFlashExtension
     {

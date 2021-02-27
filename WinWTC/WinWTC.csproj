@@ -75,7 +75,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="WindowFlashExtension.cs" />
+    <Compile Include="helpers\WindowStateHelper.cs" />
+    <Compile Include="extensions\WindowFlashExtension.cs" />
+    <Compile Include="models\Break.cs" />
     <Compile Include="TimeOutWindow.xaml.cs">
       <DependentUpon>TimeOutWindow.xaml</DependentUpon>
     </Compile>
@@ -87,7 +89,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IdleTimeDetector.cs" />
+    <Compile Include="extensions\IdleTimeDetector.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
