@@ -37,13 +37,17 @@
             </StackPanel.Background>
         </StackPanel>
         <StackPanel Grid.Column="1" Margin="20,0,20,0" VerticalAlignment="Center">
-            <TextBlock FontSize="25" Foreground="White" HorizontalAlignment="Right" Text="2's" />
             <TextBlock FontSize="25" Foreground="White" HorizontalAlignment="Right" Text="5's" />
+            <TextBlock FontSize="25" Foreground="White" HorizontalAlignment="Right" Text="10's" />
+            <TextBlock FontSize="25" Foreground="White" HorizontalAlignment="Right" Text="15's" />
+            <TextBlock FontSize="25" Foreground="White" HorizontalAlignment="Right" Text="20's" />
             <TextBlock FontSize="25" Foreground="White" HorizontalAlignment="Right" Text="IdleTime" />
         </StackPanel>
         <StackPanel Grid.Column="2" Margin="20,0,20,0" VerticalAlignment="Center">
-            <TextBlock FontSize="25" Foreground="White" Text="{Binding Path=TwoCount}" />
-            <TextBlock FontSize="25" Foreground="White" Text="{Binding Path=FiveCount}" />
+            <TextBlock FontSize="25" Foreground="White" Text="{Binding Path=ShortestBreaksCount}" />
+            <TextBlock FontSize="25" Foreground="White" Text="{Binding Path=FirstMiddleBreaksCount}" />
+            <TextBlock FontSize="25" Foreground="White" Text="{Binding Path=SecondMiddleBreaksCount}" />
+            <TextBlock FontSize="25" Foreground="White" Text="{Binding Path=LongestBreaksCount}" />
             <TextBlock FontSize="25" Foreground="White" Text="{Binding Path=IdleTime}" />
         </StackPanel>
     </Grid>

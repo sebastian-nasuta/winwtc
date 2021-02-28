@@ -11,9 +11,11 @@ namespace WinWTC.models
         public Break()
         {
             StartTime = DateTime.Now;
+            Duration = new TimeSpan();
         }
 
-        public DateTime StartTime { get; set; }
-        public TimeSpan? Duration { get; set; }
+        public DateTime StartTime { get; }
+        public TimeSpan Duration { get; set; }
+        public DateTime EndTime => StartTime.Add(Duration);
     }
 }
