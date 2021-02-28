@@ -14,6 +14,7 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -129,8 +129,18 @@
     <Content Include="assets\espresso-cup-clock-100.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="assets\icons8-circled-0-64.png" />
+    <Resource Include="assets\icons8-circled-1-64.png" />
+    <Resource Include="assets\icons8-circled-10-64.png" />
+    <Resource Include="assets\icons8-circled-2-64.png" />
+    <Resource Include="assets\icons8-circled-3-64.png" />
+    <Resource Include="assets\icons8-circled-4-64.png" />
+    <Resource Include="assets\icons8-circled-5-64.png" />
+    <Resource Include="assets\icons8-circled-6-64.png" />
+    <Resource Include="assets\icons8-circled-7-64.png" />
+    <Resource Include="assets\icons8-circled-8-64.png" />
+    <Resource Include="assets\icons8-circled-9-64.png" />
     <Resource Include="assets\espresso-cup-clock-100.png" />
-    <Content Include="assets\espresso-cup-warning-100.ico" />
     <Resource Include="assets\espresso-cup-warning-100.png" />
   </ItemGroup>
   <ItemGroup>

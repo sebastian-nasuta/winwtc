@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Threading;
 using WinWTC.extensions;
 using WinWTC.helpers;
@@ -15,12 +17,11 @@ namespace WinWTC
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private const int shortestBreak = 5;
-        private const int firstMiddleBreak = 10;
-        private const int secondMiddleBreak = 15;
-        private const int longestBreak = 20;
-        private const int maxWorkTime = 90;
-
+        private readonly bool _isDebugMode = false;
+        private int _shortestBreakSeconds => 5 * (_isDebugMode ? 1 : 60);
+        private int _longestBreakSeconds => 4 * _shortestBreakSeconds * (_isDebugMode ? 1 : 60);
+        private int _maxWorkSeconds => _isDebugMode ? 30 : (90 * 60);
+        
         private DispatcherTimer _timer;
         private TimeOutWindow _timeOutWindow;
         private bool _isTimeOutActive;
@@ -32,6 +33,7 @@ namespace WinWTC
         protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         public List<Break> FinishedBreaks = new List<Break>();
+        public ListCollectionView FinishedBreaksView => new ListCollectionView(FinishedBreaks);
 
         public string IdleTime
         {
@@ -46,13 +48,16 @@ namespace WinWTC
             }
         }
 
-        public int ShortestBreaksCount => GetCount(shortestBreak);
-        public int FirstMiddleBreaksCount => GetCount(firstMiddleBreak);
-        public int SecondMiddleBreaksCount => GetCount(secondMiddleBreak);
-        public int LongestBreaksCount => GetCount(longestBreak);
+        public int ShortestBreaksCount => GetCount(_shortestBreakSeconds, 2 * _shortestBreakSeconds);
+        public int FirstMiddleBreaksCount => GetCount(2 * _shortestBreakSeconds, 3 * _shortestBreakSeconds);
+        public int SecondMiddleBreaksCount => GetCount(3 * _shortestBreakSeconds, _longestBreakSeconds);
+        public int LongestBreaksCount => GetCount(_longestBreakSeconds, null);
 
         public MainWindow()
         {
+#if DEBUG
+            _isDebugMode = true;
+#endif
             InitializeComponent();
             mainGrid.DataContext = this;
             new WindowStateHelper(this);
@@ -82,31 +87,35 @@ namespace WinWTC
 
             IdleTime = idleTime.ToString();
 
-            if (idleTime.TotalMinutes < shortestBreak && _currentBreak?.Duration != null)
+            if (idleTime.TotalSeconds <= _shortestBreakSeconds && idleTime.TotalSeconds > _shortestBreakSeconds - (_isDebugMode ? 3 : 10))
             {
-                FinishedBreaks.Add(_currentBreak);
-                _currentBreak = new Break();
-                RaiseCounts();
+                int secondToBreak = _shortestBreakSeconds - (int)idleTime.TotalSeconds;
+                SplashScreen splashScreen = new SplashScreen($"assets/icons8-circled-{secondToBreak}-64.png");
+                splashScreen.Show(true, true);
             }
 
-            switch ((int)idleTime.TotalMinutes)
+            if (idleTime.TotalSeconds < _shortestBreakSeconds)
             {
-                case shortestBreak:
-                case firstMiddleBreak:
-                case secondMiddleBreak:
-                case longestBreak:
-                    _currentBreak.Duration = idleTime;
+                if (_currentBreak?.Duration.Ticks > 0)
+                {
+                    FinishedBreaks.Add(_currentBreak);
+                    _currentBreak = new Break();
                     RaiseCounts();
-                    break;
+                }
+            }
+            else
+            {
+                _currentBreak.Duration = idleTime;
+                RaiseCounts();
             }
         }
 
         private void SetTimeoutWindowVisibility()
         {
-            if (GetProgramDuration().TotalMinutes > maxWorkTime)
+            if (GetProgramDuration().TotalSeconds > _maxWorkSeconds)
             {
-                var periodBreaks = FinishedBreaks.Where(n => new TimeSpan(DateTime.Now.Ticks - n.EndTime.Ticks).TotalMinutes <= maxWorkTime);
-                if (periodBreaks.Select(n => n.Duration.TotalMinutes).Sum() + _currentBreak.Duration.TotalMinutes < longestBreak)
+                var periodBreaks = FinishedBreaks.Where(n => new TimeSpan(DateTime.Now.Ticks - n.EndTime.Ticks).TotalSeconds <= _maxWorkSeconds);
+                if (periodBreaks.Select(n => n.Duration.TotalSeconds).Sum() + _currentBreak.Duration.TotalSeconds < _longestBreakSeconds)
                 {
                     if (!_isTimeOutActive)
                     {
@@ -130,13 +139,21 @@ namespace WinWTC
             OnPropertyChanged("FirstMiddleBreaksCount");
             OnPropertyChanged("SecondMiddleBreaksCount");
             OnPropertyChanged("LongestBreaksCount");
+            OnPropertyChanged("FinishedBreaksView");
         }
 
-        private int GetCount(int minutes)
+        private int GetCount(int? minSeconds, int? maxSeconds)
         {
-            int result = FinishedBreaks.Where(n => (int)n.Duration.TotalMinutes == minutes).Count();
-            if (_currentBreak != null && (int)_currentBreak.Duration.TotalMinutes == minutes)
+            int result = FinishedBreaks.Where(n => (!minSeconds.HasValue || (int)n.Duration.TotalSeconds >= minSeconds)
+                                                && (!maxSeconds.HasValue || (int)n.Duration.TotalSeconds < maxSeconds)).Count();
+
+            if (_currentBreak != null
+                && (!minSeconds.HasValue || (int)_currentBreak.Duration.TotalSeconds >= minSeconds)
+                && (!maxSeconds.HasValue || (int)_currentBreak.Duration.TotalSeconds < maxSeconds))
+            {
                 result++;
+            }
+
             return result;
         }
 
