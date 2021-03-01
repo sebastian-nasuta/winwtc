@@ -19,7 +19,7 @@ namespace WinWTC
     {
         private readonly bool _isDebugMode = false;
         private int _shortestBreakSeconds => 5 * (_isDebugMode ? 1 : 60);
-        private int _longestBreakSeconds => 4 * _shortestBreakSeconds * (_isDebugMode ? 1 : 60);
+        private int _longestBreakSeconds => 4 * _shortestBreakSeconds;
         private int _maxWorkSeconds => _isDebugMode ? 30 : (90 * 60);
         
         private DispatcherTimer _timer;

@@ -33,8 +33,8 @@ namespace WinWTC.helpers
             }
             else if (_window.WindowState == WindowState.Normal)
             {
-                _myNotifyIcon.Visible = false;
                 _window.ShowInTaskbar = true;
+                _myNotifyIcon.Visible = true;
             }
         }
     }
