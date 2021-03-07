@@ -1,18 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 using WinWTC.extensions;
-using WinWTC.helpers;
 
 namespace WinWTC
 {
@@ -24,7 +11,7 @@ namespace WinWTC
         public TimeOutWindow()
         {
             InitializeComponent();
-            this.Loaded += new RoutedEventHandler(Window_Loaded); 
+            this.Loaded += new RoutedEventHandler(Window_Loaded);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

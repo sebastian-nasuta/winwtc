@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
@@ -9,6 +8,7 @@ using System.Windows.Threading;
 using WinWTC.extensions;
 using WinWTC.helpers;
 using WinWTC.models;
+using WinWTC.utils;
 
 namespace WinWTC
 {
@@ -17,15 +17,11 @@ namespace WinWTC
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private readonly bool _isDebugMode = false;
-        private int _shortestBreakSeconds => 5 * (_isDebugMode ? 1 : 60);
-        private int _longestBreakSeconds => 4 * _shortestBreakSeconds;
-        private int _maxWorkSeconds => _isDebugMode ? 30 : (90 * 60);
-        
         private DispatcherTimer _timer;
         private TimeOutWindow _timeOutWindow;
         private bool _isTimeOutActive;
 
+        private string _currentPeriodBreakTime;
         private string _idleTime;
         private Break _currentBreak;
 
@@ -48,16 +44,27 @@ namespace WinWTC
             }
         }
 
-        public int ShortestBreaksCount => GetCount(_shortestBreakSeconds, 2 * _shortestBreakSeconds);
-        public int FirstMiddleBreaksCount => GetCount(2 * _shortestBreakSeconds, 3 * _shortestBreakSeconds);
-        public int SecondMiddleBreaksCount => GetCount(3 * _shortestBreakSeconds, _longestBreakSeconds);
-        public int LongestBreaksCount => GetCount(_longestBreakSeconds, null);
+        public string CurrentPeriodBreakTime
+        {
+            get { return _currentPeriodBreakTime; }
+            set
+            {
+                if (value != _currentPeriodBreakTime)
+                {
+                    var oldValue = _currentPeriodBreakTime;
+                    _currentPeriodBreakTime = value;
+                    if (oldValue != value)
+                    {
+                        OnPropertyChanged("CurrentPeriodBreakTime");
+                        OnPropertyChanged("FinishedBreaksView");
+                    }
+                }
+            }
+        }
 
         public MainWindow()
         {
-#if DEBUG
-            _isDebugMode = true;
-#endif
+
             InitializeComponent();
             mainGrid.DataContext = this;
             new WindowStateHelper(this);
@@ -68,7 +75,7 @@ namespace WinWTC
         {
             _timer = new DispatcherTimer();
             _timer.Tick += new EventHandler(OnEveryTick);
-            _timer.Interval = TimeSpan.FromMilliseconds(1); // in miliseconds
+            _timer.Interval = TimeSpan.FromMilliseconds(10); // in miliseconds
             _timer.Start();
         }
 
@@ -86,36 +93,35 @@ namespace WinWTC
             var idleTime = IdleTimeDetector.GetIdleTimeInfo().IdleTime;
 
             IdleTime = idleTime.ToString();
+            CurrentPeriodBreakTime = GetCurrentPeriodBreaksSummaryDuration().ToString();
 
-            if (idleTime.TotalSeconds <= _shortestBreakSeconds && idleTime.TotalSeconds > _shortestBreakSeconds - (_isDebugMode ? 3 : 10))
+            if (idleTime.TotalSeconds <= WorkTimeConstants.shortestBreakSeconds && idleTime.TotalSeconds > WorkTimeConstants.shortestBreakSeconds - (App.DEBUG_MODE ? 3 : 10))
             {
-                int secondToBreak = _shortestBreakSeconds - (int)idleTime.TotalSeconds;
-                SplashScreen splashScreen = new SplashScreen($"assets/icons8-circled-{secondToBreak}-64.png");
+                int secondToBreak = WorkTimeConstants.shortestBreakSeconds - (int)idleTime.TotalSeconds;
+                SplashScreen splashScreen = new SplashScreen($"assets/retro-{(secondToBreak < 10 ? "0" : string.Empty)}{secondToBreak}.png");
                 splashScreen.Show(true, true);
             }
 
-            if (idleTime.TotalSeconds < _shortestBreakSeconds)
+            if (idleTime.TotalSeconds < WorkTimeConstants.shortestBreakSeconds)
             {
                 if (_currentBreak?.Duration.Ticks > 0)
                 {
                     FinishedBreaks.Add(_currentBreak);
+                    OnPropertyChanged("FinishedBreaksView");
                     _currentBreak = new Break();
-                    RaiseCounts();
                 }
             }
             else
             {
                 _currentBreak.Duration = idleTime;
-                RaiseCounts();
             }
         }
 
         private void SetTimeoutWindowVisibility()
         {
-            if (GetProgramDuration().TotalSeconds > _maxWorkSeconds)
+            if (GetProgramDuration().TotalSeconds > WorkTimeConstants.maxWorkSeconds)
             {
-                var periodBreaks = FinishedBreaks.Where(n => new TimeSpan(DateTime.Now.Ticks - n.EndTime.Ticks).TotalSeconds <= _maxWorkSeconds);
-                if (periodBreaks.Select(n => n.Duration.TotalSeconds).Sum() + _currentBreak.Duration.TotalSeconds < _longestBreakSeconds)
+                if (GetCurrentPeriodBreaksSummaryDuration().TotalSeconds < WorkTimeConstants.longestBreakSeconds)
                 {
                     if (!_isTimeOutActive)
                     {
@@ -133,28 +139,13 @@ namespace WinWTC
             }
         }
 
-        private void RaiseCounts()
+        private TimeSpan GetCurrentPeriodBreaksSummaryDuration()
         {
-            OnPropertyChanged("ShortestBreaksCount");
-            OnPropertyChanged("FirstMiddleBreaksCount");
-            OnPropertyChanged("SecondMiddleBreaksCount");
-            OnPropertyChanged("LongestBreaksCount");
-            OnPropertyChanged("FinishedBreaksView");
-        }
-
-        private int GetCount(int? minSeconds, int? maxSeconds)
-        {
-            int result = FinishedBreaks.Where(n => (!minSeconds.HasValue || (int)n.Duration.TotalSeconds >= minSeconds)
-                                                && (!maxSeconds.HasValue || (int)n.Duration.TotalSeconds < maxSeconds)).Count();
-
-            if (_currentBreak != null
-                && (!minSeconds.HasValue || (int)_currentBreak.Duration.TotalSeconds >= minSeconds)
-                && (!maxSeconds.HasValue || (int)_currentBreak.Duration.TotalSeconds < maxSeconds))
-            {
-                result++;
-            }
-
-            return result;
+            var periodBreaks = FinishedBreaks.Where(n => n.IsInCurrentPeriod);
+            var ticks = periodBreaks.Select(n => n.Duration.Ticks).Sum();
+            if (_currentBreak != null)
+                ticks += _currentBreak.Duration.Ticks;
+            return new TimeSpan(ticks);
         }
 
         private DateTime GetProgramStartTime()

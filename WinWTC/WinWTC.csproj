@@ -81,6 +81,7 @@
     <Compile Include="TimeOutWindow.xaml.cs">
       <DependentUpon>TimeOutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="utils\WorkTimeConstants.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -129,19 +130,30 @@
     <Content Include="assets\espresso-cup-clock-100.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="assets\icons8-circled-0-64.png" />
-    <Resource Include="assets\icons8-circled-1-64.png" />
-    <Resource Include="assets\icons8-circled-10-64.png" />
-    <Resource Include="assets\icons8-circled-2-64.png" />
-    <Resource Include="assets\icons8-circled-3-64.png" />
-    <Resource Include="assets\icons8-circled-4-64.png" />
-    <Resource Include="assets\icons8-circled-5-64.png" />
-    <Resource Include="assets\icons8-circled-6-64.png" />
-    <Resource Include="assets\icons8-circled-7-64.png" />
-    <Resource Include="assets\icons8-circled-8-64.png" />
-    <Resource Include="assets\icons8-circled-9-64.png" />
+    <Resource Include="assets\numbers\circled\circled-00-64.png" />
+    <Resource Include="assets\numbers\circled\circled-01-64.png" />
+    <Resource Include="assets\numbers\circled\circled-02-64.png" />
+    <Resource Include="assets\numbers\circled\circled-03-64.png" />
+    <Resource Include="assets\numbers\circled\circled-04-64.png" />
+    <Resource Include="assets\numbers\circled\circled-05-64.png" />
+    <Resource Include="assets\numbers\circled\circled-06-64.png" />
+    <Resource Include="assets\numbers\circled\circled-07-64.png" />
+    <Resource Include="assets\numbers\circled\circled-08-64.png" />
+    <Resource Include="assets\numbers\circled\circled-09-64.png" />
+    <Resource Include="assets\numbers\circled\circled-10-64.png" />
     <Resource Include="assets\espresso-cup-clock-100.png" />
     <Resource Include="assets\espresso-cup-warning-100.png" />
+    <Resource Include="assets\numbers\retro\retro-00.png" />
+    <Resource Include="assets\numbers\retro\retro-01.png" />
+    <Resource Include="assets\numbers\retro\retro-02.png" />
+    <Resource Include="assets\numbers\retro\retro-03.png" />
+    <Resource Include="assets\numbers\retro\retro-04.png" />
+    <Resource Include="assets\numbers\retro\retro-05.png" />
+    <Resource Include="assets\numbers\retro\retro-06.png" />
+    <Resource Include="assets\numbers\retro\retro-07.png" />
+    <Resource Include="assets\numbers\retro\retro-08.png" />
+    <Resource Include="assets\numbers\retro\retro-09.png" />
+    <Resource Include="assets\numbers\retro\retro-10.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

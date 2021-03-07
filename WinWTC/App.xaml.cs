@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace WinWTC
 {
@@ -13,5 +7,11 @@ namespace WinWTC
     /// </summary>
     public partial class App : Application
     {
+        public static bool DEBUG_MODE =
+#if DEBUG
+            true;
+#else
+            false;
+#endif
     }
 }

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using WinWTC.utils;
 
 namespace WinWTC.models
 {
@@ -15,7 +12,8 @@ namespace WinWTC.models
         }
 
         public DateTime StartTime { get; }
-        public TimeSpan Duration { get; set; }
         public DateTime EndTime => StartTime.Add(Duration);
+        public TimeSpan Duration { get; set; }
+        public bool IsInCurrentPeriod => new TimeSpan(DateTime.Now.Ticks - EndTime.Ticks).TotalSeconds <= WorkTimeConstants.maxWorkSeconds;
     }
 }
