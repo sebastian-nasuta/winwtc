@@ -121,7 +121,7 @@ namespace WinWTC
         {
             if (GetProgramDuration().TotalSeconds > WorkTimeConstants.maxWorkSeconds)
             {
-                if (GetCurrentPeriodBreaksSummaryDuration().TotalSeconds < WorkTimeConstants.longestBreakSeconds)
+                if (GetCurrentPeriodBreaksSummaryDuration().TotalSeconds < WorkTimeConstants.requiredBreakSeconds)
                 {
                     if (!_isTimeOutActive)
                     {
