@@ -17,6 +17,7 @@ namespace WinWTC
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        SplashScreen _sleepSplashScreen = new SplashScreen($"assets/espresso-cup-sleep-100.png");
         private DispatcherTimer _timer;
         private TimeOutWindow _timeOutWindow;
         private bool _isTimeOutActive;
@@ -109,11 +110,13 @@ namespace WinWTC
                     FinishedBreaks.Add(_currentBreak);
                     OnPropertyChanged("FinishedBreaksView");
                     _currentBreak = new Break();
+                    _sleepSplashScreen.Close(new TimeSpan());
                 }
             }
             else
             {
                 _currentBreak.Duration = idleTime;
+                _sleepSplashScreen.Show(false, true);
             }
         }
 

@@ -128,6 +128,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="assets\espresso-cup-sleep-100.png" />
     <Resource Include="assets\retro-00.png" />
     <Resource Include="assets\retro-01.png" />
     <Resource Include="assets\retro-02.png" />
