@@ -79,8 +79,8 @@
     <Compile Include="helpers\WindowStateHelper.cs" />
     <Compile Include="extensions\WindowFlashExtension.cs" />
     <Compile Include="models\Break.cs" />
-    <Compile Include="TimeOutWindow.xaml.cs">
-      <DependentUpon>TimeOutWindow.xaml</DependentUpon>
+    <Compile Include="CornerTextWindow.xaml.cs">
+      <DependentUpon>CornerTextWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="utils\WorkTimeConstants.cs" />
     <Page Include="MainWindow.xaml">
@@ -96,9 +96,9 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="TimeOutWindow.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="CornerTextWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -119,6 +119,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="fonts\Teko-Bold.ttf" />
+    <Resource Include="fonts\Teko-Light.ttf" />
+    <Resource Include="fonts\Teko-Medium.ttf" />
+    <Resource Include="fonts\Teko-Regular.ttf" />
+    <Resource Include="fonts\Teko-SemiBold.ttf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -128,18 +133,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="assets\espresso-cup-sleep-100.png" />
-    <Resource Include="assets\retro-00.png" />
-    <Resource Include="assets\retro-01.png" />
-    <Resource Include="assets\retro-02.png" />
-    <Resource Include="assets\retro-03.png" />
-    <Resource Include="assets\retro-04.png" />
-    <Resource Include="assets\retro-05.png" />
-    <Resource Include="assets\retro-06.png" />
-    <Resource Include="assets\retro-07.png" />
-    <Resource Include="assets\retro-08.png" />
-    <Resource Include="assets\retro-09.png" />
-    <Resource Include="assets\retro-10.png" />
     <Content Include="assets\espresso-cup-clock-100.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

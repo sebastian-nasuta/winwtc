@@ -17,9 +17,12 @@ namespace WinWTC
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        SplashScreen _sleepSplashScreen = new SplashScreen($"assets/espresso-cup-sleep-100.png");
         private DispatcherTimer _timer;
-        private TimeOutWindow _timeOutWindow;
+        private CornerTextWindow _countDownWindow;
+        private CornerTextWindow _sleepWindow;
+        private CornerTextWindow _timeOutWindow;
+        private bool _isCountDownActive;
+        private bool _isSleepActive;
         private bool _isTimeOutActive;
 
         private string _currentPeriodBreakTime;
@@ -99,8 +102,11 @@ namespace WinWTC
             if (idleTime.TotalSeconds <= WorkTimeConstants.shortestBreakSeconds && idleTime.TotalSeconds > WorkTimeConstants.shortestBreakSeconds - (App.DEBUG_MODE ? 3 : 10))
             {
                 int secondToBreak = WorkTimeConstants.shortestBreakSeconds - (int)idleTime.TotalSeconds;
-                SplashScreen splashScreen = new SplashScreen($"assets/retro-{(secondToBreak < 10 ? "0" : string.Empty)}{secondToBreak}.png");
-                splashScreen.Show(true, true);
+                DisplayCountDownWindow(secondToBreak);
+            }
+            else
+            {
+                CloseCountDownWindow();
             }
 
             if (idleTime.TotalSeconds < WorkTimeConstants.shortestBreakSeconds)
@@ -110,14 +116,52 @@ namespace WinWTC
                     FinishedBreaks.Add(_currentBreak);
                     OnPropertyChanged("FinishedBreaksView");
                     _currentBreak = new Break();
-                    _sleepSplashScreen.Close(new TimeSpan());
+                    CloseSleepWindow();
                 }
             }
             else
             {
                 _currentBreak.Duration = idleTime;
-                _sleepSplashScreen.Show(false, true);
+                DisplaySleepWindow();
             }
+        }
+
+        private void DisplayCountDownWindow(int number)
+        {
+            if (!_isCountDownActive)
+            {
+                _countDownWindow = new CornerTextWindow();
+                if (_isTimeOutActive)
+                    _countDownWindow.Height = 200;
+                _countDownWindow.Closed += new EventHandler((s_tow, e_tow) => _isCountDownActive = false);
+                _countDownWindow.Show();
+                _isCountDownActive = true;
+            }
+            _countDownWindow.SetNumberToDisplay(number);
+        }
+
+        private void CloseCountDownWindow()
+        {
+            if (_isCountDownActive)
+                _countDownWindow.Close();
+        }
+
+        private void DisplaySleepWindow()
+        {
+            if (!_isSleepActive)
+            {
+                _sleepWindow = new CornerTextWindow();
+                _sleepWindow.Closed += new EventHandler((s_tow, e_tow) => _isSleepActive = false);
+                _sleepWindow.Show();
+                _isSleepActive = true;
+                _sleepWindow.SetTextToDisplay("-_-");
+            }
+        }
+
+        private void CloseSleepWindow()
+        {
+            if (_isSleepActive)
+                _sleepWindow.Close();
         }
 
         private void SetTimeoutWindowVisibility()
@@ -128,10 +172,12 @@ namespace WinWTC
                 {
                     if (!_isTimeOutActive)
                     {
-                        _timeOutWindow = new TimeOutWindow();
+                        _timeOutWindow = new CornerTextWindow();
                         _timeOutWindow.Closed += new EventHandler((s_tow, e_tow) => _isTimeOutActive = false);
                         _timeOutWindow.Show();
                         _isTimeOutActive = true;
+                        _timeOutWindow.SetTextToDisplay("!");
+                        _timeOutWindow.FlashWindow();
                     }
                 }
                 else
