@@ -43,12 +43,13 @@ namespace WinWTC
 
         public void SetTextToDisplay(string text)
         {
+            this.Title = text;
             TextToDisplay = text;
         }
 
         public void SetNumberToDisplay(int number)
         {
-            TextToDisplay = number.ToString();
+            SetTextToDisplay(number.ToString());
         }
     }
 }

@@ -133,6 +133,7 @@ namespace WinWTC
                 _countDownWindow = new CornerTextWindow();
                 if (_isTimeOutActive)
                     _countDownWindow.Height = 200;
+                _countDownWindow.ShowInTaskbar = false;
                 _countDownWindow.Closed += new EventHandler((s_tow, e_tow) => _isCountDownActive = false);
                 _countDownWindow.Show();
                 _isCountDownActive = true;
@@ -151,6 +152,7 @@ namespace WinWTC
             if (!_isSleepActive)
             {
                 _sleepWindow = new CornerTextWindow();
+                _sleepWindow.ShowInTaskbar = false;
                 _sleepWindow.Closed += new EventHandler((s_tow, e_tow) => _isSleepActive = false);
                 _sleepWindow.Show();
                 _isSleepActive = true;
