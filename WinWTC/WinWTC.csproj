@@ -82,6 +82,7 @@
     <Compile Include="CornerTextWindow.xaml.cs">
       <DependentUpon>CornerTextWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="utils\OutlinedTextBlock.cs" />
     <Compile Include="utils\WorkTimeConstants.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

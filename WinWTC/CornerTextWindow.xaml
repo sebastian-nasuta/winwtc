@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:utils="clr-namespace:WinWTC.utils"
         mc:Ignorable="d"
         Title="CornerTextWindow"
         Height="100"
@@ -20,13 +21,22 @@
         </Grid.RowDefinitions>
 
         <StackPanel>
-            <TextBlock
-                FontSize="100"
-                FontFamily="./fonts/#Teko"
-                Foreground="White"
+            <utils:OutlinedTextBlock
                 HorizontalAlignment="Center"
-                Margin="0,-15,0,0" VerticalAlignment="Center"
-                Text="{Binding Path=TextToDisplay}"/>
+                VerticalAlignment="Center"
+                Margin="0,10,0,0"
+                FontFamily="./fonts/#Teko"
+                FontSize="60"
+                StrokeThickness="1"
+                Stroke="Firebrick"
+                Fill="White"
+                MinWidth="100"
+                MinHeight="100"
+                TextAlignment="Center"
+                Text="{Binding Path=TextToDisplay}">
+            </utils:OutlinedTextBlock>
         </StackPanel>
     </Grid>
 </Window>
+
+<!--./fonts/#Teko-->

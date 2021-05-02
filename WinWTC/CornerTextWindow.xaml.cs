@@ -16,7 +16,7 @@ namespace WinWTC
 
         public string TextToDisplay
         {
-            get { return _textToDisplay; }
+            get => _textToDisplay;
             private set
             {
                 if (value != _textToDisplay)
