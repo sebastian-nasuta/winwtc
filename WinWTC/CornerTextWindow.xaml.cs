@@ -9,7 +9,7 @@ namespace WinWTC
     /// </summary>
     public partial class CornerTextWindow : Window, INotifyPropertyChanged
     {
-        private string _textToDisplay;
+        private string _textToDisplay = "";
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
