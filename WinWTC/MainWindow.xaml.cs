@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
 using WinWTC.extensions;
@@ -208,5 +209,7 @@ namespace WinWTC
         }
 
         private TimeSpan GetProgramDuration() => new TimeSpan(DateTime.Now.Ticks - GetProgramStartTime().Ticks);
+
+        private void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e) => e.Row.Header = (e.Row.GetIndex() + 1).ToString();
     }
 }

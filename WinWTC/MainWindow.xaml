@@ -52,12 +52,13 @@
                 Foreground="White"
                 Text="{Binding Path=IdleTime}" />
         </StackPanel>
-        <StackPanel
+        <DockPanel
             Grid.Row="1"
             Grid.ColumnSpan="3"
-            Margin="20,0,20,0"
+            Margin="15"
             VerticalAlignment="Center">
-            <DataGrid ItemsSource="{Binding FinishedBreaksView}" />
-        </StackPanel>
+            <DataGrid ItemsSource="{Binding FinishedBreaksView}"
+                      LoadingRow="DataGrid_LoadingRow" />
+        </DockPanel>
     </Grid>
 </Window>
